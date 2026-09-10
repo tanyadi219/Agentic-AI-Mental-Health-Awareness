@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MindBridge — Mental Health AI Companion</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body>
+
+  <!-- ── CRISIS BANNER ─────────────────────────────── -->
+  <div class="crisis-banner">
+    🆘 In immediate danger? Call <strong>988</strong> (US) &nbsp;·&nbsp;
+    Text HOME to <strong>741741</strong> &nbsp;·&nbsp;
+    Emergency: <strong>911</strong>
+  </div>
+
+  <!-- ── APP SHELL ─────────────────────────────────── -->
+  <div class="app-shell">
+
+    <!-- ── SIDEBAR ──────────────────────────────────── -->
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <div class="logo-icon">🧠</div>
+        <div class="logo-text">
+          <span class="logo-name">MindBridge</span>
+          <span class="logo-tagline">Powered by GPT-OSS 120B</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <button class="nav-btn active" id="btn-chat"      data-icon="💬" onclick="showPanel('chat')">💬 Chat</button>
+        <button class="nav-btn"        id="btn-resources" data-icon="📚" onclick="showPanel('resources')">📚 Resources</button>
+        <button class="nav-btn"        id="btn-about"     data-icon="ℹ️" onclick="showPanel('about')">ℹ️ About</button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div id="status-indicator" class="status-dot checking">Checking AI…</div>
+        <button class="reset-btn" onclick="resetConversation()">🔄 New Conversation</button>
+      </div>
+    </aside>
+
+    <!-- ── MAIN CONTENT ──────────────────────────────── -->
+    <main class="main-content">
+
+      <!-- ════════════ CHAT PANEL ════════════ -->
+      <section id="panel-chat" class="panel active">
+
+        <div class="chat-header">
+          <div class="chat-header-info">
+            <span class="chat-agent-name">MindBridge</span>
+            <span class="chat-agent-status" id="agent-status-text">Connecting…</span>
+          </div>
+          <div class="chat-header-badge">Safe Space 🕊️</div>
+        </div>
+
+        <div class="chat-messages" id="chat-messages"></div>
+
+        <!-- Risk Alert Bar -->
+        <div class="risk-alert" id="risk-alert" style="display:none;"></div>
+
+        <div class="chat-input-area">
+          <div class="input-wrapper">
+            <textarea
+              id="user-input"
+              placeholder="Share what's on your mind… I'm here to listen."
+              rows="1"
+              maxlength="2000"
+              onkeydown="handleKey(event)"
+              oninput="autoResize(this)"
+            ></textarea>
+            <button class="send-btn" id="send-btn" onclick="sendMessage()" title="Send (Enter)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <line x1="22" y1="2" x2="11" y2="13"></line>
+                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+              </svg>
+            </button>
+          </div>
+          <p class="input-disclaimer">
+            MindBridge is an AI companion, not a licensed therapist.
+            For emergencies, call <strong>988</strong> or <strong>911</strong>.
+          </p>
+        </div>
+      </section>
+
+      <!-- ════════════ RESOURCES PANEL ════════════ -->
+      <section id="panel-resources" class="panel">
+        <div class="panel-header">
+          <h2>📚 Mental Health Resources</h2>
+          <p>Evidence-based support, available to you 24/7.</p>
+        </div>
+        <div class="resources-grid">
+
+          <div class="resource-card emergency">
+            <div class="resource-icon">🆘</div>
+            <h3>Crisis Hotlines</h3>
+            <ul>
+              <li><strong>988 Suicide &amp; Crisis Lifeline</strong> — Call or text <strong>988</strong> (free, 24/7)</li>
+              <li><strong>Crisis Text Line</strong> — Text HOME to <strong>741741</strong></li>
+              <li><strong>IASP Crisis Centres</strong> — <a href="https://www.iasp.info/resources/Crisis_Centres/" target="_blank">Directory by country</a></li>
+              <li><strong>Emergency</strong> — <strong>911</strong> (US) or your local number</li>
+            </ul>
+          </div>
+
+          <div class="resource-card">
+            <div class="resource-icon">🧘</div>
+            <h3>5-4-3-2-1 Grounding</h3>
+            <p>When overwhelmed, bring yourself back to now:</p>
+            <ul>
+              <li>👁️ Name <strong>5 things</strong> you can see</li>
+              <li>✋ Notice <strong>4 things</strong> you can touch</li>
+              <li>👂 Identify <strong>3 things</strong> you can hear</li>
+              <li>👃 Find <strong>2 things</strong> you can smell</li>
+              <li>👅 Notice <strong>1 thing</strong> you can taste</li>
+            </ul>
+          </div>
+
+          <div class="resource-card">
+            <div class="resource-icon">💨</div>
+            <h3>Box Breathing (4-4-4-4)</h3>
+            <ul>
+              <li>Inhale slowly for <strong>4 seconds</strong></li>
+              <li>Hold breath for <strong>4 seconds</strong></li>
+              <li>Exhale slowly for <strong>4 seconds</strong></li>
+              <li>Hold for <strong>4 seconds</strong></li>
+            </ul>
+            <p>Repeat 4–6 cycles. Activates the parasympathetic nervous system and reduces cortisol.</p>
+          </div>
+
+          <div class="resource-card">
+            <div class="resource-icon">🤝</div>
+            <h3>Online Support Communities</h3>
+            <ul>
+              <li><a href="https://www.nami.org" target="_blank">NAMI — National Alliance on Mental Illness</a></li>
+              <li><a href="https://www.mhanational.org" target="_blank">Mental Health America</a></li>
+              <li><a href="https://www.7cups.com" target="_blank">7 Cups — Free Online Listening</a></li>
+              <li><a href="https://www.betterhelp.com" target="_blank">BetterHelp — Online Therapy</a></li>
+            </ul>
+          </div>
+
+          <div class="resource-card">
+            <div class="resource-icon">📖</div>
+            <h3>Suicide Prevention Facts</h3>
+            <ul>
+              <li><strong>Warning signs:</strong> talking about death, giving away possessions, social withdrawal, extreme mood swings.</li>
+              <li>Asking someone directly about suicide does <strong>not</strong> increase risk — it shows you care.</li>
+              <li>Say: <em>"I hear you. You're not alone. I'm here."</em></li>
+              <li>Secure or remove access to means when safe to do so.</li>
+              <li>Stay with the person; don't leave them alone in a crisis.</li>
+            </ul>
+          </div>
+
+          <div class="resource-card">
+            <div class="resource-icon">🌱</div>
+            <h3>Daily Self-Care Practices</h3>
+            <ul>
+              <li>Sleep 7–9 hours on a consistent schedule</li>
+              <li>Move your body — even a 10-minute walk helps</li>
+              <li>Eat nourishing food and stay hydrated</li>
+              <li>Limit alcohol and substance use</li>
+              <li>Journal or practice gratitude writing</li>
+              <li>Connect meaningfully with trusted people</li>
+              <li>Spend time in nature or natural light</li>
+            </ul>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ════════════ ABOUT PANEL ════════════ -->
+      <section id="panel-about" class="panel">
+        <div class="panel-header">
+          <h2>ℹ️ About MindBridge</h2>
+        </div>
+        <div class="about-content">
+
+          <div class="about-card">
+            <h3>What is MindBridge?</h3>
+            <p>MindBridge is an <strong>Agentic AI</strong> companion designed for mental health awareness and suicide prevention. It provides compassionate, non-judgmental emotional support and connects users with evidence-based coping strategies and crisis resources.</p>
+          </div>
+
+          <div class="about-card">
+            <h3>🤖 AI Model</h3>
+            <p>MindBridge is powered by <strong>openai/gpt-oss-120b</strong>, an open-source 120B parameter language model running via the <strong>Groq</strong> inference API — delivering fast, high-quality responses. All requests go through HTTPS; no conversation data is stored.</p>
+            <p>A multi-layer <strong>safety system</strong> scans every message for crisis signals before the LLM responds, ensuring emergency resources are never delayed by AI reasoning.</p>
+          </div>
+
+          <div class="about-card warning">
+            <h3>⚠️ Important Disclaimer</h3>
+            <p>MindBridge is <strong>NOT a substitute for professional mental health care.</strong> It is not a licensed therapist, psychologist, or medical professional and cannot diagnose or treat any condition.</p>
+            <p>If you are in crisis, call <strong>988</strong> (US) or go to your nearest emergency room <strong>immediately.</strong></p>
+          </div>
+
+          <div class="about-card">
+            <h3>🛠 Technology Stack</h3>
+            <ul>
+              <li><strong>AI:</strong> openai/gpt-oss-120b (open-source) via Groq API</li>
+              <li><strong>Backend:</strong> Python 3 + Flask</li>
+              <li><strong>Frontend:</strong> HTML5, CSS3, Vanilla JavaScript</li>
+              <li><strong>Safety Layer:</strong> Keyword-based crisis detection + LLM risk prompting</li>
+              <li><strong>Privacy:</strong> No conversation history stored server-side</li>
+            </ul>
+          </div>
+
+        </div>
+      </section>
+
+    </main>
+  </div><!-- /.app-shell -->
+
+  <script>
+    // ── State ──────────────────────────────────────────────────────
+    let conversationHistory = [];
+    let isThinking = false;
+
+    // ── Boot ───────────────────────────────────────────────────────
+    document.addEventListener("DOMContentLoaded", () => {
+      checkStatus();
+      showWelcomeMessage();
+    });
+
+    function showWelcomeMessage() {
+      appendMessage("assistant",
+        `Hello, I'm **MindBridge** 💚\n\n` +
+        `I'm here to listen, support, and walk alongside you — no judgment, no pressure. ` +
+        `This is a safe space where you can share whatever is on your mind.\n\n` +
+        `Whether you're feeling anxious, overwhelmed, sad, or just need someone to talk to, ` +
+        `I'm here. You can also ask me about coping strategies, mental health topics, ` +
+        `or how to support someone you care about.\n\n` +
+        `*How are you feeling today?*`
+      );
+    }
+
+    // ── Status check ───────────────────────────────────────────────
+    async function checkStatus() {
+      const dot        = document.getElementById("status-indicator");
+      const statusText = document.getElementById("agent-status-text");
+      try {
+        const res  = await fetch("/api/status");
+        const data = await res.json();
+        if (data.ok) {
+          dot.className    = "status-dot online";
+          dot.textContent  = "AI Online";
+          statusText.textContent = `Online · ${data.model || "GPT-OSS 120B"}`;
+          statusText.className   = "chat-agent-status online";
+        } else {
+          dot.className    = "status-dot offline";
+          dot.textContent  = "AI Offline";
+          statusText.textContent = "Error · Check API key";
+          statusText.className   = "chat-agent-status offline";
+          appendMessage("system",
+            `⚠️ **Could not reach Groq API.** ${data.error || ""} ` +
+            `If you're in crisis, please call **988** or text HOME to **741741** immediately.`
+          );
+        }
+      } catch (e) {
+        dot.className   = "status-dot offline";
+        dot.textContent = "Offline";
+        statusText.textContent = "Offline";
+        statusText.className   = "chat-agent-status offline";
+      }
+    }
+
+    // ── Send message ───────────────────────────────────────────────
+    async function sendMessage() {
+      if (isThinking) return;
+      const input   = document.getElementById("user-input");
+      const message = input.value.trim();
+      if (!message) return;
+
+      input.value = "";
+      autoResize(input);
+      appendMessage("user", message);
+      conversationHistory.push({ role: "user", content: message });
+      setThinking(true);
+
+      try {
+        const res  = await fetch("/api/chat", {
+          method:  "POST",
+          headers: { "Content-Type": "application/json" },
+          body:    JSON.stringify({ message, history: conversationHistory.slice(0, -1) }),
+        });
+        const data = await res.json();
+
+        if (data.error) {
+          appendMessage("system", "⚠️ " + data.error);
+        } else {
+          appendMessage("assistant", data.reply);
+          conversationHistory.push({ role: "assistant", content: data.reply });
+          handleRiskLevel(data.risk_level);
+        }
+      } catch (err) {
+        appendMessage("system",
+          "⚠️ Network error. If you're in crisis, please call **988** immediately."
+        );
+      }
+      setThinking(false);
+    }
+
+    // ── Risk UI ────────────────────────────────────────────────────
+    function handleRiskLevel(level) {
+      const bar    = document.getElementById("risk-alert");
+      const banner = document.querySelector(".crisis-banner");
+      if (level === "high") {
+        bar.innerHTML   = `🆘 <strong>Crisis Resources:</strong> Call <strong>988</strong> &nbsp;|&nbsp; Text HOME to <strong>741741</strong> &nbsp;|&nbsp; Emergency: <strong>911</strong>`;
+        bar.style.display = "block";
+        bar.className   = "risk-alert high";
+        banner.classList.add("flash");
+        setTimeout(() => banner.classList.remove("flash"), 2500);
+      } else if (level === "moderate") {
+        bar.innerHTML   = `💛 If things feel overwhelming, professional support is available. <strong>988</strong> is free and confidential.`;
+        bar.style.display = "block";
+        bar.className   = "risk-alert moderate";
+      } else {
+        bar.style.display = "none";
+      }
+    }
+
+    // ── Append message ─────────────────────────────────────────────
+    function appendMessage(role, content) {
+      const container = document.getElementById("chat-messages");
+      const wrapper   = document.createElement("div");
+      wrapper.className = `message-wrapper ${role}`;
+
+      const bubble = document.createElement("div");
+      bubble.className = `message-bubble ${role}`;
+      bubble.innerHTML = markdownToHtml(content);
+
+      if (role === "assistant") {
+        const avatar      = document.createElement("div");
+        avatar.className  = "avatar";
+        avatar.textContent = "🧠";
+        wrapper.appendChild(avatar);
+      }
+      wrapper.appendChild(bubble);
+      container.appendChild(wrapper);
+      container.scrollTop = container.scrollHeight;
+    }
+
+    // ── Markdown → HTML ────────────────────────────────────────────
+    function markdownToHtml(text) {
+      // Step 1: escape bare HTML to prevent injection
+      text = text
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+
+      // Step 2: inline formatting (bold before italic to avoid ** overlap)
+      text = text
+        .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+        .replace(/(?<!\*)\*(?!\*)(.+?)(?<!\*)\*(?!\*)/g, "<em>$1</em>")
+        .replace(/`([^`]+)`/g, "<code>$1</code>");
+
+      // Step 3: block elements — process line-by-line
+      const lines  = text.split("\n");
+      const output = [];
+      let inList   = false;
+
+      for (const raw of lines) {
+        const line = raw.trimEnd();
+
+        // Horizontal rule
+        if (/^---+$/.test(line)) {
+          if (inList) { output.push("</ul>"); inList = false; }
+          output.push("<hr>");
+          continue;
+        }
+
+        // Bullet list item  (-, *, •)
+        const listMatch = line.match(/^[\s]*[-*•]\s+(.+)/);
+        if (listMatch) {
+          if (!inList) { output.push("<ul>"); inList = true; }
+          output.push(`<li>${listMatch[1]}</li>`);
+          continue;
+        }
+
+        // Numbered list item
+        const numMatch = line.match(/^[\s]*\d+\.\s+(.+)/);
+        if (numMatch) {
+          if (!inList) { output.push("<ul>"); inList = true; }
+          output.push(`<li>${numMatch[1]}</li>`);
+          continue;
+        }
+
+        // Close list when non-list content appears
+        if (inList && line.trim() !== "") {
+          output.push("</ul>");
+          inList = false;
+        }
+
+        // Blank line → paragraph break
+        if (line.trim() === "") {
+          output.push("</p><p>");
+        } else {
+          output.push(line + "<br>");
+        }
+      }
+
+      if (inList) output.push("</ul>");
+
+      // Wrap in <p>, clean up empty paragraphs and trailing <br> before </p>
+      let html = "<p>" + output.join("") + "</p>";
+      html = html
+        .replace(/<p>\s*<\/p>/g, "")
+        .replace(/<br>\s*<\/p>/g, "</p>")
+        .replace(/<br>\s*<ul>/g, "<ul>")
+        .replace(/<\/ul>\s*<br>/g, "</ul>")
+        .replace(/(<\/ul>|<hr>)\s*<\/p>/g, "$1")
+        .replace(/<p>\s*(<ul>|<hr>)/g, "$1");
+      return html;
+    }
+
+    // ── Thinking indicator ─────────────────────────────────────────
+    function setThinking(state) {
+      isThinking = state;
+      document.getElementById("send-btn").disabled = state;
+
+      const container = document.getElementById("chat-messages");
+      const existing  = document.getElementById("thinking-indicator");
+
+      if (state && !existing) {
+        const wrapper = document.createElement("div");
+        wrapper.id    = "thinking-indicator";
+        wrapper.className = "message-wrapper assistant";
+
+        const avatar      = document.createElement("div");
+        avatar.className  = "avatar";
+        avatar.textContent = "🧠";
+
+        const bubble = document.createElement("div");
+        bubble.className = "message-bubble assistant thinking";
+        bubble.innerHTML = "<span></span><span></span><span></span>";
+
+        wrapper.appendChild(avatar);
+        wrapper.appendChild(bubble);
+        container.appendChild(wrapper);
+        container.scrollTop = container.scrollHeight;
+      } else if (!state && existing) {
+        existing.remove();
+      }
+    }
+
+    // ── Keyboard & textarea ────────────────────────────────────────
+    function handleKey(e) {
+      if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+    }
+    function autoResize(el) {
+      el.style.height = "auto";
+      el.style.height = Math.min(el.scrollHeight, 160) + "px";
+    }
+
+    // ── Panel switching ────────────────────────────────────────────
+    function showPanel(name) {
+      document.querySelectorAll(".panel").forEach(p  => p.classList.remove("active"));
+      document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("active"));
+      document.getElementById(`panel-${name}`).classList.add("active");
+      document.getElementById(`btn-${name}`).classList.add("active");
+    }
+
+    // ── Reset ──────────────────────────────────────────────────────
+    async function resetConversation() {
+      conversationHistory = [];
+      document.getElementById("chat-messages").innerHTML = "";
+      document.getElementById("risk-alert").style.display = "none";
+      await fetch("/api/reset", { method: "POST" });
+      showWelcomeMessage();
+      showPanel("chat");
+    }
+  </script>
+</body>
+</html>
