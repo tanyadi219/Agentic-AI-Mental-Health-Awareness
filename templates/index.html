@@ -24,7 +24,7 @@
         <div class="logo-icon">🧠</div>
         <div class="logo-text">
           <span class="logo-name">MindBridge</span>
-          <span class="logo-tagline">Powered by GPT-OSS 120B</span>
+          <span class="logo-tagline">🌍 Powered by GPT-OSS 120B</span>
         </div>
       </div>
 
@@ -63,7 +63,7 @@
           <div class="input-wrapper">
             <textarea
               id="user-input"
-              placeholder="Share what's on your mind… I'm here to listen."
+              placeholder="Share what's on your mind… (any language) 🌍"
               rows="1"
               maxlength="2000"
               onkeydown="handleKey(event)"
@@ -180,9 +180,10 @@
           </div>
 
           <div class="about-card">
-            <h3>🤖 AI Model</h3>
+            <h3>🤖 AI Model & 🌍 Languages</h3>
             <p>MindBridge is powered by <strong>openai/gpt-oss-120b</strong>, an open-source 120B parameter language model running via the <strong>Groq</strong> inference API — delivering fast, high-quality responses. All requests go through HTTPS; no conversation data is stored.</p>
-            <p>A multi-layer <strong>safety system</strong> scans every message for crisis signals before the LLM responds, ensuring emergency resources are never delayed by AI reasoning.</p>
+            <p>MindBridge understands and responds in <strong>all world languages</strong> — including English, Spanish, French, Arabic, Hindi, Chinese, Japanese, Korean, Portuguese, German, Swahili, Urdu, Bengali, Russian, Turkish, and dozens more. Simply write in your language and the AI will reply in the same language.</p>
+            <p>A multi-layer <strong>safety system</strong> scans every message for crisis signals (in all languages) before the LLM responds, ensuring emergency resources are never delayed.</p>
           </div>
 
           <div class="about-card warning">
@@ -195,9 +196,10 @@
             <h3>🛠 Technology Stack</h3>
             <ul>
               <li><strong>AI:</strong> openai/gpt-oss-120b (open-source) via Groq API</li>
+              <li><strong>Languages:</strong> All world languages via Unicode script detection + LLM</li>
               <li><strong>Backend:</strong> Python 3 + Flask</li>
               <li><strong>Frontend:</strong> HTML5, CSS3, Vanilla JavaScript</li>
-              <li><strong>Safety Layer:</strong> Keyword-based crisis detection + LLM risk prompting</li>
+              <li><strong>Safety Layer:</strong> Multilingual keyword crisis detection + LLM risk prompting</li>
               <li><strong>Privacy:</strong> No conversation history stored server-side</li>
             </ul>
           </div>
@@ -221,13 +223,14 @@
 
     function showWelcomeMessage() {
       appendMessage("assistant",
-        `Hello, I'm **MindBridge** 💚\n\n` +
+        `Hello, I'm **MindBridge** 💚🌍\n\n` +
         `I'm here to listen, support, and walk alongside you — no judgment, no pressure. ` +
         `This is a safe space where you can share whatever is on your mind.\n\n` +
         `Whether you're feeling anxious, overwhelmed, sad, or just need someone to talk to, ` +
         `I'm here. You can also ask me about coping strategies, mental health topics, ` +
         `or how to support someone you care about.\n\n` +
-        `*How are you feeling today?*`
+        `I speak **all world languages** — just write to me in your language and I will reply in the same language.\n\n` +
+        `*How are you feeling today? / ¿Cómo te sientes hoy? / Comment vous sentez-vous? / आज आप कैसा महसूस कर रहे हैं?*`
       );
     }
 
