@@ -271,6 +271,12 @@ def query_groq(messages: list) -> str:
 # ─────────────────────────────────────────────────────────────────
 
 @app.route("/")
+def landing():
+    """Serve the landing / front page."""
+    return render_template("landing.html")
+
+
+@app.route("/app")
 def index():
     """Serve the main chat interface."""
     return render_template("index.html")
