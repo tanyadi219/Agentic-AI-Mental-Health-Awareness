@@ -26,6 +26,8 @@
   --red-light:    #fdecea;
   --orange:       #e67e22;
   --orange-light: #fef3e2;
+  --yellow:       #f0b429;
+  --yellow-light: #fffbeb;
 
   --sidebar-w:    240px;
   --radius:       14px;
@@ -59,6 +61,8 @@ html, body {
   transition: background .3s;
 }
 .crisis-banner strong { color: #ffe08a; }
+.crisis-banner a { color: #ffe08a; text-decoration: none; }
+.crisis-banner a:hover { text-decoration: underline; }
 .crisis-banner.flash { background: linear-gradient(90deg, #c0392b, #e74c3c); }
 
 /* ── App Shell ──────────────────────────────────────────────── */
@@ -130,6 +134,9 @@ html, body {
 }
 .nav-btn:hover { background: var(--surface-alt); color: var(--text); }
 .nav-btn.active { background: var(--green-light); color: var(--green); font-weight: 600; }
+/* Crisis Help nav button */
+#btn-crisis.active { background: var(--red-light); color: var(--red); }
+#btn-crisis:hover  { color: var(--red); }
 
 /* Sidebar Footer */
 .sidebar-footer {
@@ -219,6 +226,99 @@ html, body {
   font-weight: 600;
 }
 
+/* ── Mood Check-In Widget ───────────────────────────────────── */
+.mood-checkin {
+  background: linear-gradient(135deg, #f0faf5, #e8f4f8);
+  border-bottom: 1px solid var(--border);
+  padding: 16px 24px;
+  flex-shrink: 0;
+  transition: opacity .3s, transform .3s;
+}
+.mood-checkin-inner {
+  max-width: 480px;
+  margin: 0 auto;
+  text-align: center;
+}
+.mood-question {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 12px;
+}
+.mood-scale-label {
+  color: var(--green);
+  font-size: 14px;
+}
+.mood-slider-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.mood-emoji {
+  font-size: 24px;
+  flex-shrink: 0;
+  transition: all .15s;
+  min-width: 32px;
+  text-align: center;
+}
+.mood-score {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--green);
+  min-width: 28px;
+  text-align: center;
+  flex-shrink: 0;
+}
+.mood-slider {
+  flex: 1;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  border-radius: 3px;
+  background: linear-gradient(to right, var(--green-mid) 0%, var(--green) 100%);
+  outline: none;
+  cursor: pointer;
+}
+.mood-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  background: var(--green);
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(46,139,110,.3);
+  transition: transform .1s;
+}
+.mood-slider::-webkit-slider-thumb:hover { transform: scale(1.2); }
+.mood-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+.mood-btn {
+  padding: 8px 20px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  font-family: var(--font);
+  transition: all .15s;
+}
+.mood-btn-share {
+  background: var(--green);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(46,139,110,.25);
+}
+.mood-btn-share:hover { background: #25735a; transform: translateY(-1px); }
+.mood-btn-skip {
+  background: none;
+  color: var(--text-muted);
+  border: 1px solid var(--border) !important;
+}
+.mood-btn-skip:hover { color: var(--text); border-color: var(--text-muted) !important; }
+
 /* Messages */
 .chat-messages {
   flex: 1;
@@ -295,7 +395,6 @@ html, body {
 .message-bubble.user code { background: rgba(255,255,255,.2); }
 .message-bubble a { color: var(--teal); }
 .message-bubble.user a { color: #ffe; }
-/* Lists rendered from LLM markdown */
 .message-bubble ul {
   padding-left: 20px;
   margin: 6px 0 8px;
@@ -305,7 +404,6 @@ html, body {
   font-size: 14.5px;
   line-height: 1.55;
 }
-/* Horizontal rule from --- separator */
 .message-bubble hr {
   border: none;
   border-top: 1px solid var(--border);
@@ -347,6 +445,7 @@ html, body {
   border-top: 1px solid #f5c6c6;
   animation: fadeIn .3s ease;
 }
+.risk-alert.high a { color: #7a0000; }
 .risk-alert.moderate {
   background: var(--orange-light);
   color: #6b3500;
@@ -412,6 +511,160 @@ textarea#user-input::placeholder { color: var(--text-light); }
 }
 .input-disclaimer strong { color: var(--text-muted); }
 
+/* ── Breathing Panel ─────────────────────────────────────────── */
+.breathe-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 32px 28px;
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+.breathe-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 32px 28px;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  text-align: center;
+}
+.breathe-circle-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.breathe-circle {
+  width: 160px; height: 160px;
+  border-radius: 50%;
+  background: var(--green-light);
+  border: 3px solid var(--green-mid);
+  display: flex; align-items: center; justify-content: center;
+  transition: transform 4s ease-in-out, background-color .5s, border-color .5s;
+  box-shadow: 0 0 0 0 rgba(46,139,110,.2);
+}
+.breathe-circle.expand {
+  transform: scale(1.25);
+  background: linear-gradient(135deg, #d4f0e5, #b8e6d4);
+  border-color: var(--green);
+  box-shadow: 0 0 0 16px rgba(46,139,110,.08);
+}
+.breathe-circle.contract {
+  transform: scale(0.85);
+  background: var(--teal-light);
+  border-color: var(--teal);
+  box-shadow: 0 0 0 0 rgba(26,122,154,.1);
+}
+.breathe-circle.hold {
+  transform: scale(1.0);
+  background: var(--purple-light);
+  border-color: var(--purple);
+}
+.breathe-circle.done {
+  transform: scale(1.1);
+  background: linear-gradient(135deg, #d4f0e5, #e8f4f8);
+  border-color: var(--green);
+}
+.breathe-circle-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+.breathe-phase-label {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--green);
+}
+.breathe-timer-num {
+  font-size: 36px;
+  font-weight: 800;
+  color: var(--text);
+  line-height: 1;
+}
+.breathe-instruction {
+  font-size: 14px;
+  color: var(--text-muted);
+  max-width: 360px;
+  line-height: 1.6;
+}
+.breathe-cycle-count {
+  font-size: 12px;
+  color: var(--text-light);
+  min-height: 18px;
+}
+.breathe-controls {
+  display: flex;
+  gap: 12px;
+}
+.breathe-start-btn,
+.breathe-stop-btn {
+  padding: 12px 32px;
+  border-radius: 24px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+  font-family: var(--font);
+  transition: all .15s;
+}
+.breathe-start-btn {
+  background: var(--green);
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(46,139,110,.3);
+}
+.breathe-start-btn:hover { background: #25735a; transform: translateY(-2px); }
+.breathe-stop-btn {
+  background: var(--surface-alt);
+  color: var(--text-muted);
+  border: 1px solid var(--border) !important;
+}
+.breathe-stop-btn:hover { color: var(--red); border-color: var(--red) !important; }
+.breathe-note {
+  font-size: 13px;
+  color: var(--text-light);
+  font-style: italic;
+  max-width: 340px;
+}
+.breathe-info-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 18px;
+}
+.breathe-info-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  box-shadow: var(--shadow);
+}
+.breathe-info-card h3 {
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 10px;
+  color: var(--text);
+}
+.breathe-info-card p {
+  font-size: 13.5px;
+  color: var(--text-muted);
+  line-height: 1.65;
+}
+.breathe-info-card ul {
+  padding-left: 18px;
+}
+.breathe-info-card li {
+  font-size: 13.5px;
+  color: var(--text-muted);
+  margin-bottom: 5px;
+}
+.breathe-info-card a { color: var(--green); text-decoration: none; font-weight: 500; }
+.breathe-info-card a:hover { text-decoration: underline; }
+
 /* ── Resources Panel ────────────────────────────────────────── */
 .panel-header {
   padding: 24px 28px 12px;
@@ -421,6 +674,11 @@ textarea#user-input::placeholder { color: var(--text-light); }
 }
 .panel-header h2 { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
 .panel-header p  { font-size: 14px; color: var(--text-muted); }
+.crisis-panel-header {
+  background: linear-gradient(135deg, #fdecea, #fff5f5);
+  border-bottom: 2px solid #f5c6c6;
+}
+.crisis-panel-header h2 { color: var(--red); }
 
 .resources-grid {
   flex: 1;
@@ -440,10 +698,6 @@ textarea#user-input::placeholder { color: var(--text-light); }
   padding: 20px;
   box-shadow: var(--shadow);
 }
-.resource-card.emergency {
-  border-left: 4px solid var(--red);
-  background: linear-gradient(to right, #fff5f5, #fff);
-}
 .resource-icon { font-size: 26px; margin-bottom: 10px; }
 .resource-card h3 {
   font-size: 15px; font-weight: 700;
@@ -454,6 +708,83 @@ textarea#user-input::placeholder { color: var(--text-light); }
 .resource-card li { font-size: 13.5px; color: var(--text); margin-bottom: 5px; }
 .resource-card a  { color: var(--teal); text-decoration: none; }
 .resource-card a:hover { text-decoration: underline; }
+
+/* ── Crisis Panel ────────────────────────────────────────────── */
+.crisis-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px 28px;
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.crisis-message-card {
+  background: linear-gradient(135deg, #fdecea, #fff5f5);
+  border: 2px solid #f5c6c6;
+  border-radius: var(--radius);
+  padding: 20px 24px;
+}
+.crisis-message-card h3 {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--red);
+  margin-bottom: 10px;
+}
+.crisis-message-card p {
+  font-size: 14.5px;
+  color: var(--text);
+  line-height: 1.7;
+  margin-bottom: 8px;
+}
+.crisis-message-card p:last-child { margin-bottom: 0; }
+.crisis-hotlines-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 12px;
+}
+.crisis-hotline-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 14px 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  box-shadow: var(--shadow);
+}
+.crisis-hotline-card.primary {
+  border: 2px solid var(--red);
+  background: linear-gradient(135deg, #fdecea, #fff5f5);
+}
+.chc-flag { font-size: 24px; flex-shrink: 0; padding-top: 2px; }
+.chc-body h4 {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+.chc-body p {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-bottom: 3px;
+  line-height: 1.4;
+}
+.chc-body p:last-child { margin-bottom: 0; }
+.chc-body strong { color: var(--text); font-weight: 700; }
+.crisis-hotline-card.primary .chc-body strong { color: var(--red); }
+.crisis-find-more {
+  display: inline-block;
+  align-self: flex-start;
+  color: var(--teal);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(26,122,154,.3);
+  padding-bottom: 2px;
+  transition: border-color .15s;
+}
+.crisis-find-more:hover { border-color: var(--teal); }
 
 /* ── About Panel ────────────────────────────────────────────── */
 .about-content {
@@ -526,6 +857,11 @@ textarea#user-input::placeholder { color: var(--text-light); }
   .about-content { padding: 16px; }
   .chat-messages { padding: 16px; }
   .chat-input-area { padding: 12px 16px 14px; }
+  .mood-checkin { padding: 12px 16px; }
+  .breathe-content { padding: 16px; }
+  .crisis-content { padding: 16px; }
+  .crisis-hotlines-grid { grid-template-columns: 1fr; }
+  .breathe-info-cards { grid-template-columns: 1fr; }
 }
 
 
@@ -625,6 +961,15 @@ textarea#user-input::placeholder { color: var(--text-light); }
   border-color: var(--green);
   color: var(--green);
   transform: translateY(-1px);
+}
+.lp-cta-crisis {
+  border-color: rgba(192,57,43,.4);
+  color: var(--red);
+}
+.lp-cta-crisis:hover {
+  background: var(--red-light);
+  border-color: var(--red);
+  color: var(--red);
 }
 .lp-cta-lg {
   padding: 16px 44px;
@@ -769,10 +1114,39 @@ textarea#user-input::placeholder { color: var(--text-light); }
   line-height: 1.7;
 }
 
+/* ── Why It Matters grid ────────────────────────────────────── */
+.lp-why-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 24px;
+}
+.lp-why-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 28px 24px;
+  box-shadow: var(--shadow);
+}
+.lp-why-icon {
+  font-size: 32px;
+  margin-bottom: 14px;
+}
+.lp-why-card h3 {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: var(--text);
+}
+.lp-why-card p {
+  font-size: 14px;
+  color: var(--text-muted);
+  line-height: 1.65;
+}
+
 /* ── Features grid ──────────────────────────────────────────── */
 .lp-features-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: 24px;
 }
 .lp-feature-card {
@@ -884,9 +1258,9 @@ textarea#user-input::placeholder { color: var(--text-light); }
 .lp-sub-light   { color: rgba(255,255,255,.8); }
 .lp-hotline-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 12px;
-  margin-bottom: 28px;
+  margin-bottom: 20px;
 }
 .lp-hotline {
   background: rgba(255,255,255,.12);
@@ -898,6 +1272,17 @@ textarea#user-input::placeholder { color: var(--text-light); }
   backdrop-filter: blur(4px);
 }
 .lp-hotline strong { color: #ffe08a; }
+.lp-crisis-text-line {
+  background: rgba(255,255,255,.1);
+  border: 1px solid rgba(255,255,255,.2);
+  border-radius: var(--radius-sm);
+  padding: 14px 20px;
+  font-size: 14px;
+  color: rgba(255,255,255,.9);
+  margin-bottom: 20px;
+  text-align: center;
+}
+.lp-crisis-text-line strong { color: #ffe08a; }
 .lp-hotline-more {
   display: inline-block;
   color: #ffe08a;
@@ -990,10 +1375,11 @@ textarea#user-input::placeholder { color: var(--text-light); }
 }
 .lp-footer-cta-inner { max-width: 600px; margin: 0 auto; }
 .lp-footer-cta h2 {
-  font-size: 36px;
+  font-size: 34px;
   font-weight: 800;
   color: #fff;
   margin-bottom: 12px;
+  line-height: 1.25;
 }
 .lp-footer-cta p {
   font-size: 16px;
@@ -1062,9 +1448,11 @@ textarea#user-input::placeholder { color: var(--text-light); }
   .lp-section { padding: 56px 20px; }
   .lp-footer-inner { flex-direction: column; text-align: center; }
   .lp-footer-links { justify-content: center; }
+  .lp-why-grid { grid-template-columns: 1fr; }
 }
 @media (max-width: 480px) {
   .lp-stats-inner { grid-template-columns: repeat(2, 1fr); gap: 16px; }
   .lp-hotline-grid { grid-template-columns: 1fr; }
   .lp-hero-actions { flex-direction: column; align-items: center; }
+  .lp-features-grid { grid-template-columns: 1fr; }
 }

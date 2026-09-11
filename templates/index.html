@@ -12,7 +12,7 @@
   <div class="crisis-banner">
     🆘 In immediate danger? Call <strong>988</strong> (US) &nbsp;·&nbsp;
     Text HOME to <strong>741741</strong> &nbsp;·&nbsp;
-    Emergency: <strong>911</strong>
+    International: <a href="https://www.iasp.info/resources/Crisis_Centres/" target="_blank" style="color:#ffe08a;">find your country →</a>
   </div>
 
   <!-- ── APP SHELL ─────────────────────────────────── -->
@@ -24,13 +24,15 @@
         <div class="logo-icon">🧠</div>
         <div class="logo-text">
           <span class="logo-name">MindBridge</span>
-          <span class="logo-tagline">🌍 Powered by GPT-OSS 120B</span>
+          <span class="logo-tagline">🌍 Mental Health Companion</span>
         </div>
       </div>
 
       <nav class="sidebar-nav">
         <button class="nav-btn active" id="btn-chat"      data-icon="💬" onclick="showPanel('chat')">💬 Chat</button>
+        <button class="nav-btn"        id="btn-breathe"   data-icon="💨" onclick="showPanel('breathe')">💨 Breathe</button>
         <button class="nav-btn"        id="btn-resources" data-icon="📚" onclick="showPanel('resources')">📚 Resources</button>
+        <button class="nav-btn"        id="btn-crisis"    data-icon="🆘" onclick="showPanel('crisis')">🆘 Crisis Help</button>
         <button class="nav-btn"        id="btn-about"     data-icon="ℹ️" onclick="showPanel('about')">ℹ️ About</button>
       </nav>
 
@@ -54,6 +56,22 @@
           <div class="chat-header-badge">Safe Space 🕊️</div>
         </div>
 
+        <!-- Mood Check-in Widget -->
+        <div class="mood-checkin" id="mood-checkin">
+          <div class="mood-checkin-inner">
+            <p class="mood-question">How are you feeling right now? <span class="mood-scale-label" id="mood-label">–</span></p>
+            <div class="mood-slider-row">
+              <span class="mood-emoji" id="mood-emoji">😶</span>
+              <input type="range" min="1" max="10" value="5" class="mood-slider" id="mood-slider" oninput="updateMoodSlider(this.value)" />
+              <span class="mood-score" id="mood-score">5</span>
+            </div>
+            <div class="mood-actions">
+              <button class="mood-btn mood-btn-share" onclick="shareMood()">Share with MindBridge</button>
+              <button class="mood-btn mood-btn-skip" onclick="skipMood()">Skip for now</button>
+            </div>
+          </div>
+        </div>
+
         <div class="chat-messages" id="chat-messages"></div>
 
         <!-- Risk Alert Bar -->
@@ -63,7 +81,7 @@
           <div class="input-wrapper">
             <textarea
               id="user-input"
-              placeholder="Share what's on your mind… (any language) 🌍"
+              placeholder="Share what's on your mind… (any language 🌍)"
               rows="1"
               maxlength="2000"
               onkeydown="handleKey(event)"
@@ -78,8 +96,60 @@
           </div>
           <p class="input-disclaimer">
             MindBridge is an AI companion, not a licensed therapist.
-            For emergencies, call <strong>988</strong> or <strong>911</strong>.
+            For emergencies, call <strong>988</strong> or <strong>911</strong> (US) · International: <strong>find your country's hotline in Crisis Help</strong>
           </p>
+        </div>
+      </section>
+
+      <!-- ════════════ BREATHE PANEL ════════════ -->
+      <section id="panel-breathe" class="panel">
+        <div class="panel-header">
+          <h2>💨 Breathing Exercise</h2>
+          <p>Used by therapists and first responders. A few minutes can genuinely calm your nervous system.</p>
+        </div>
+        <div class="breathe-content">
+
+          <div class="breathe-card">
+            <div class="breathe-circle-wrap">
+              <div class="breathe-circle" id="breathe-circle">
+                <div class="breathe-circle-inner">
+                  <span class="breathe-phase-label" id="breathe-phase">Press Start</span>
+                  <span class="breathe-timer-num" id="breathe-timer"></span>
+                </div>
+              </div>
+            </div>
+            <p class="breathe-instruction" id="breathe-instruction">
+              Box breathing: 4 seconds in — 4 hold — 4 out — 4 hold. Repeat 5 times.
+            </p>
+            <p class="breathe-cycle-count" id="breathe-cycles"></p>
+            <div class="breathe-controls">
+              <button class="breathe-start-btn" id="breathe-start-btn" onclick="startBreathe()">Start</button>
+              <button class="breathe-stop-btn" id="breathe-stop-btn" onclick="stopBreathe()" style="display:none;">Stop</button>
+            </div>
+            <p class="breathe-note">It's okay if your mind wanders. Just gently come back to the breath each time.</p>
+          </div>
+
+          <div class="breathe-info-cards">
+            <div class="breathe-info-card">
+              <h3>🧠 Why it works</h3>
+              <p>Box breathing activates the parasympathetic nervous system — the body's natural "rest and calm" response. It reduces cortisol, slows heart rate, and interrupts the anxiety cycle.</p>
+            </div>
+            <div class="breathe-info-card">
+              <h3>🌿 When to use it</h3>
+              <ul>
+                <li>When you feel a panic attack starting</li>
+                <li>Before a difficult conversation</li>
+                <li>When overwhelmed and can't focus</li>
+                <li>Before sleep if your mind won't quiet</li>
+                <li>Any time emotions feel too big</li>
+              </ul>
+            </div>
+            <div class="breathe-info-card">
+              <h3>💬 Talk about it</h3>
+              <p>If breathing exercises aren't enough, that's okay — sometimes the weight is too heavy to carry alone. <a href="#" onclick="showPanel('chat'); return false;">Talk to MindBridge</a> about what you're going through.</p>
+            </div>
+          </div>
+
         </div>
       </section>
 
@@ -87,82 +157,278 @@
       <section id="panel-resources" class="panel">
         <div class="panel-header">
           <h2>📚 Mental Health Resources</h2>
-          <p>Evidence-based support, available to you 24/7.</p>
+          <p>Evidence-based support — coping tools, understanding your experience, and how to help others.</p>
         </div>
         <div class="resources-grid">
-
-          <div class="resource-card emergency">
-            <div class="resource-icon">🆘</div>
-            <h3>Crisis Hotlines</h3>
-            <ul>
-              <li><strong>988 Suicide &amp; Crisis Lifeline</strong> — Call or text <strong>988</strong> (free, 24/7)</li>
-              <li><strong>Crisis Text Line</strong> — Text HOME to <strong>741741</strong></li>
-              <li><strong>IASP Crisis Centres</strong> — <a href="https://www.iasp.info/resources/Crisis_Centres/" target="_blank">Directory by country</a></li>
-              <li><strong>Emergency</strong> — <strong>911</strong> (US) or your local number</li>
-            </ul>
-          </div>
 
           <div class="resource-card">
             <div class="resource-icon">🧘</div>
             <h3>5-4-3-2-1 Grounding</h3>
-            <p>When overwhelmed, bring yourself back to now:</p>
+            <p>When panic or distress peaks, this technique pulls you back into the present moment:</p>
             <ul>
-              <li>👁️ Name <strong>5 things</strong> you can see</li>
-              <li>✋ Notice <strong>4 things</strong> you can touch</li>
+              <li>👁️ Name <strong>5 things</strong> you can see right now</li>
+              <li>✋ Notice <strong>4 things</strong> you can physically touch</li>
               <li>👂 Identify <strong>3 things</strong> you can hear</li>
               <li>👃 Find <strong>2 things</strong> you can smell</li>
               <li>👅 Notice <strong>1 thing</strong> you can taste</li>
             </ul>
+            <p style="margin-top:8px;font-size:12.5px;color:#7a6a50;">This works because it redirects the brain's attention away from distress toward concrete reality.</p>
           </div>
 
           <div class="resource-card">
-            <div class="resource-icon">💨</div>
-            <h3>Box Breathing (4-4-4-4)</h3>
+            <div class="resource-icon">🌊</div>
+            <h3>Understanding Depression</h3>
+            <p>Depression is an illness, not a character flaw or weakness. It changes how the brain processes thoughts — making everything feel heavier and more permanent than it actually is.</p>
             <ul>
-              <li>Inhale slowly for <strong>4 seconds</strong></li>
-              <li>Hold breath for <strong>4 seconds</strong></li>
-              <li>Exhale slowly for <strong>4 seconds</strong></li>
-              <li>Hold for <strong>4 seconds</strong></li>
+              <li>Depression <strong>lies</strong> — it tells you things will never change. They can and do.</li>
+              <li>You don't have to "cheer up" — you need support, not effort.</li>
+              <li>Many people recover with therapy, support, and time.</li>
+              <li>Reaching out is a sign of strength, not failure.</li>
             </ul>
-            <p>Repeat 4–6 cycles. Activates the parasympathetic nervous system and reduces cortisol.</p>
           </div>
 
           <div class="resource-card">
-            <div class="resource-icon">🤝</div>
-            <h3>Online Support Communities</h3>
+            <div class="resource-icon">💛</div>
+            <h3>Understanding Anxiety</h3>
+            <p>Anxiety is the nervous system's alarm system — it was designed to protect you. But sometimes it gets stuck "on" even when there's no real danger.</p>
             <ul>
-              <li><a href="https://www.nami.org" target="_blank">NAMI — National Alliance on Mental Illness</a></li>
-              <li><a href="https://www.mhanational.org" target="_blank">Mental Health America</a></li>
-              <li><a href="https://www.7cups.com" target="_blank">7 Cups — Free Online Listening</a></li>
-              <li><a href="https://www.betterhelp.com" target="_blank">BetterHelp — Online Therapy</a></li>
+              <li>Physical symptoms (racing heart, tight chest) are real — not imagined.</li>
+              <li>Avoiding things makes anxiety grow; gentle exposure shrinks it.</li>
+              <li>CBT (Cognitive Behavioural Therapy) has strong evidence for anxiety.</li>
+              <li>Breathing slowly genuinely helps — it signals safety to your brain.</li>
+            </ul>
+          </div>
+
+          <div class="resource-card">
+            <div class="resource-icon">🕊️</div>
+            <h3>Understanding Grief</h3>
+            <p>Grief has no correct timeline, no stages you must follow in order, and no way to "do it right." It is simply love with nowhere to go.</p>
+            <ul>
+              <li>Grief can be for a person, a relationship, a future, or an identity.</li>
+              <li>You don't "get over" loss — you learn to carry it differently over time.</li>
+              <li>Some days will feel unbearable. That doesn't mean it's always going to be this way.</li>
+              <li>Let people sit with you. You don't need to explain or justify your grief.</li>
             </ul>
           </div>
 
           <div class="resource-card">
             <div class="resource-icon">📖</div>
-            <h3>Suicide Prevention Facts</h3>
+            <h3>Recognising Suicide Warning Signs</h3>
+            <p>Asking someone directly about suicide does <strong>not</strong> increase risk — it shows you care and opens a door.</p>
             <ul>
-              <li><strong>Warning signs:</strong> talking about death, giving away possessions, social withdrawal, extreme mood swings.</li>
-              <li>Asking someone directly about suicide does <strong>not</strong> increase risk — it shows you care.</li>
-              <li>Say: <em>"I hear you. You're not alone. I'm here."</em></li>
-              <li>Secure or remove access to means when safe to do so.</li>
-              <li>Stay with the person; don't leave them alone in a crisis.</li>
+              <li><strong>What to watch for:</strong> talking about death or being a burden, giving away possessions, sudden calmness after depression, withdrawing from people, saying goodbye</li>
+              <li>Say: <em>"I've noticed you seem really low lately. I care about you. Are you having thoughts of hurting yourself?"</em></li>
+              <li>Listen without judgment. Don't promise secrecy.</li>
+              <li>Stay with them and help connect them to professional support.</li>
+              <li>Remove access to means (medications, sharp objects) when safe to do so.</li>
             </ul>
           </div>
 
           <div class="resource-card">
-            <div class="resource-icon">🌱</div>
-            <h3>Daily Self-Care Practices</h3>
+            <div class="resource-icon">🤝</div>
+            <h3>Finding Professional Help</h3>
             <ul>
-              <li>Sleep 7–9 hours on a consistent schedule</li>
-              <li>Move your body — even a 10-minute walk helps</li>
-              <li>Eat nourishing food and stay hydrated</li>
-              <li>Limit alcohol and substance use</li>
-              <li>Journal or practice gratitude writing</li>
-              <li>Connect meaningfully with trusted people</li>
-              <li>Spend time in nature or natural light</li>
+              <li><a href="https://www.psychologytoday.com/us/therapists" target="_blank">Psychology Today — Find a Therapist</a></li>
+              <li><a href="https://www.nami.org/Support-Education/NAMI-HelpLine" target="_blank">NAMI HelpLine — Free guidance (US)</a></li>
+              <li><a href="https://www.7cups.com" target="_blank">7 Cups — Free Online Listening</a></li>
+              <li><a href="https://www.betterhelp.com" target="_blank">BetterHelp — Online Therapy</a></li>
+              <li><a href="https://www.mhanational.org" target="_blank">Mental Health America — Resources</a></li>
+              <li><a href="https://www.iasp.info/resources/Crisis_Centres/" target="_blank">IASP Crisis Centres — All Countries</a></li>
+            </ul>
+            <p style="margin-top:8px;font-size:12.5px;color:#7a6a50;">Therapy isn't a last resort — it's one of the most effective tools available for almost any mental health challenge.</p>
+          </div>
+
+          <div class="resource-card">
+            <div class="resource-icon">🌱</div>
+            <h3>Daily Practices That Genuinely Help</h3>
+            <p>Small, consistent actions can meaningfully shift mental health over time:</p>
+            <ul>
+              <li>Sleep 7–9 hours consistently — sleep deprivation worsens every mental health condition</li>
+              <li>Move your body — even a 10-minute walk outside changes brain chemistry</li>
+              <li>Eat nourishing food and stay hydrated — gut health and mental health are linked</li>
+              <li>Connect with one person today — even a brief, genuine interaction helps</li>
+              <li>Limit doom-scrolling — curate what enters your mind</li>
+              <li>Write one sentence about how you feel — externalising emotions reduces their intensity</li>
+              <li>Spend time in natural light — it regulates mood and sleep rhythms</li>
             </ul>
           </div>
+
+          <div class="resource-card">
+            <div class="resource-icon">💜</div>
+            <h3>For Friends &amp; Family</h3>
+            <p>Supporting someone in mental health distress can feel overwhelming. Here's what actually helps:</p>
+            <ul>
+              <li><strong>Listen more than you speak.</strong> Resist the urge to fix or give advice immediately.</li>
+              <li>Say: <em>"I'm here. I'm not going anywhere. You don't have to explain."</em></li>
+              <li>Don't say: "It could be worse" / "Just be positive" / "You have so much to live for."</li>
+              <li>Check in again in a few days — one text can matter more than you know.</li>
+              <li>You can't force someone to get help. You can keep showing up.</li>
+              <li><strong>Look after yourself too.</strong> Supporting someone struggling is emotionally demanding.</li>
+            </ul>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ════════════ CRISIS HELP PANEL ════════════ -->
+      <section id="panel-crisis" class="panel">
+        <div class="panel-header crisis-panel-header">
+          <h2>🆘 Crisis Help — Available Right Now</h2>
+          <p>These services are free, confidential, and staffed by real people — 24 hours a day, 7 days a week.</p>
+        </div>
+        <div class="crisis-content">
+
+          <div class="crisis-message-card">
+            <h3>If you're in crisis right now</h3>
+            <p>You don't have to have the right words. You don't have to explain everything. You just have to make one call or send one text — and a real person will be there.</p>
+            <p><strong>You matter. This moment does not have to be your last.</strong></p>
+          </div>
+
+          <div class="crisis-hotlines-grid">
+            <div class="crisis-hotline-card primary">
+              <div class="chc-flag">🇺🇸</div>
+              <div class="chc-body">
+                <h4>United States</h4>
+                <p>Call or text <strong>988</strong> — Suicide &amp; Crisis Lifeline</p>
+                <p>Text HOME to <strong>741741</strong> — Crisis Text Line</p>
+                <p>Emergency: <strong>911</strong></p>
+              </div>
+            </div>
+            <div class="crisis-hotline-card">
+              <div class="chc-flag">🇬🇧</div>
+              <div class="chc-body">
+                <h4>United Kingdom</h4>
+                <p>Samaritans: <strong>116 123</strong> (free, 24/7)</p>
+                <p>Text SHOUT to <strong>85258</strong></p>
+              </div>
+            </div>
+            <div class="crisis-hotline-card">
+              <div class="chc-flag">🇮🇳</div>
+              <div class="chc-body">
+                <h4>India</h4>
+                <p>iCall: <strong>9152987821</strong></p>
+                <p>Vandrevala Foundation: <strong>1860-2662-345</strong></p>
+              </div>
+            </div>
+            <div class="crisis-hotline-card">
+              <div class="chc-flag">🇦🇺</div>
+              <div class="chc-body">
+                <h4>Australia</h4>
+                <p>Lifeline: <strong>13 11 14</strong> (free, 24/7)</p>
+                <p>Beyond Blue: <strong>1300 22 4636</strong></p>
+              </div>
+            </div>
+            <div class="crisis-hotline-card">
+              <div class="chc-flag">🇨🇦</div>
+              <div class="chc-body">
+                <h4>Canada</h4>
+                <p>Talk Suicide: <strong>1-833-456-4566</strong></p>
+                <p>Crisis Text: Text HOME to <strong>686868</strong></p>
+              </div>
+            </div>
+            <div class="crisis-hotline-card">
+              <div class="chc-flag">🇧🇷</div>
+              <div class="chc-body">
+                <h4>Brazil</h4>
+                <p>CVV: <strong>188</strong> (free, 24/7)</p>
+              </div>
+            </div>
+            <div class="crisis-hotline-card">
+              <div class="chc-flag">🇲🇽</div>
+              <div class="chc-body">
+                <h4>Mexico</h4>
+                <p>SAPTEL: <strong>55 5259-8121</strong> (free, 24/7)</p>
+              </div>
+            </div>
+            <div class="crisis-hotline-card">
+              <div class="chc-flag">🇩🇪</div>
+              <div class="chc-body">
+                <h4>Germany</h4>
+                <p>TelefonSeelsorge: <strong>0800 111 0 111</strong> (free, 24/7)</p>
+              </div>
+            </div>
+            <div class="crisis-hotline-card">
+              <div class="chc-flag">🇫🇷</div>
+              <div class="chc-body">
+                <h4>France</h4>
+                <p>Numéro national: <strong>3114</strong> (free, 24/7)</p>
+              </div>
+            </div>
+            <div class="crisis-hotline-card">
+              <div class="chc-flag">🇯🇵</div>
+              <div class="chc-body">
+                <h4>Japan</h4>
+                <p>Inochi no Denwa: <strong>0120-783-556</strong></p>
+              </div>
+            </div>
+            <div class="crisis-hotline-card">
+              <div class="chc-flag">🇰🇷</div>
+              <div class="chc-body">
+                <h4>Korea</h4>
+                <p>Hope Line: <strong>1393</strong> (free, 24/7)</p>
+              </div>
+            </div>
+            <div class="crisis-hotline-card">
+              <div class="chc-flag">🇨🇳</div>
+              <div class="chc-body">
+                <h4>China</h4>
+                <p>Hope 24: <strong>400-161-9995</strong></p>
+              </div>
+            </div>
+            <div class="crisis-hotline-card">
+              <div class="chc-flag">🇿🇦</div>
+              <div class="chc-body">
+                <h4>South Africa</h4>
+                <p>SADAG: <strong>0800 567 567</strong> (free, 24/7)</p>
+              </div>
+            </div>
+            <div class="crisis-hotline-card">
+              <div class="chc-flag">🇳🇬</div>
+              <div class="chc-body">
+                <h4>Nigeria</h4>
+                <p>NSMHP: <strong>08028585585</strong></p>
+              </div>
+            </div>
+            <div class="crisis-hotline-card">
+              <div class="chc-flag">🇰🇪</div>
+              <div class="chc-body">
+                <h4>Kenya</h4>
+                <p>Befrienders: <strong>+254 722 178 177</strong></p>
+              </div>
+            </div>
+            <div class="crisis-hotline-card">
+              <div class="chc-flag">🇵🇰</div>
+              <div class="chc-body">
+                <h4>Pakistan</h4>
+                <p>Umang: <strong>0317-4288665</strong></p>
+              </div>
+            </div>
+            <div class="crisis-hotline-card">
+              <div class="chc-flag">🇧🇩</div>
+              <div class="chc-body">
+                <h4>Bangladesh</h4>
+                <p>Kaan Pete Roi: <strong>01779-554391</strong></p>
+              </div>
+            </div>
+            <div class="crisis-hotline-card">
+              <div class="chc-flag">🇵🇭</div>
+              <div class="chc-body">
+                <h4>Philippines</h4>
+                <p>HOPELINE: <strong>2919</strong> (free, 24/7)</p>
+              </div>
+            </div>
+            <div class="crisis-hotline-card">
+              <div class="chc-flag">🇳🇿</div>
+              <div class="chc-body">
+                <h4>New Zealand</h4>
+                <p>Lifeline: <strong>0800 543 354</strong></p>
+              </div>
+            </div>
+          </div>
+
+          <a href="https://www.iasp.info/resources/Crisis_Centres/" target="_blank" class="crisis-find-more">
+            🌍 Find your country's crisis centre →
+          </a>
 
         </div>
       </section>
@@ -176,30 +442,43 @@
 
           <div class="about-card">
             <h3>What is MindBridge?</h3>
-            <p>MindBridge is an <strong>Agentic AI</strong> companion designed for mental health awareness and suicide prevention. It provides compassionate, non-judgmental emotional support and connects users with evidence-based coping strategies and crisis resources.</p>
+            <p>MindBridge is a compassionate AI companion built specifically to support people experiencing mental health challenges — including anxiety, depression, grief, loneliness, and crisis. It was designed with one principle: <strong>no one should feel alone when they're struggling</strong>.</p>
+            <p>It listens first, validates your experience, offers evidence-based coping tools, and connects you to professional support when you need it — all without judgment and available 24 hours a day, in every language.</p>
           </div>
 
           <div class="about-card">
-            <h3>🤖 AI Model & 🌍 Languages</h3>
-            <p>MindBridge is powered by <strong>openai/gpt-oss-120b</strong>, an open-source 120B parameter language model running via the <strong>Groq</strong> inference API — delivering fast, high-quality responses. All requests go through HTTPS; no conversation data is stored.</p>
-            <p>MindBridge understands and responds in <strong>all world languages</strong> — including English, Spanish, French, Arabic, Hindi, Chinese, Japanese, Korean, Portuguese, German, Swahili, Urdu, Bengali, Russian, Turkish, and dozens more. Simply write in your language and the AI will reply in the same language.</p>
-            <p>A multi-layer <strong>safety system</strong> scans every message for crisis signals (in all languages) before the LLM responds, ensuring emergency resources are never delayed.</p>
+            <h3>🤖 How it works</h3>
+            <p>MindBridge uses the <strong>openai/gpt-oss-120b</strong> open-source language model via the <strong>Groq</strong> inference API. Every message passes through a multi-layer safety system before and after the AI responds — ensuring crisis resources reach you even if the AI itself has a problem.</p>
+            <p>The AI is guided by a detailed system prompt trained on principles from Cognitive Behavioural Therapy (CBT), Motivational Interviewing, and evidence-based suicide prevention frameworks.</p>
+            <p>MindBridge responds in <strong>all world languages</strong> — it detects your language automatically. No setup required.</p>
+          </div>
+
+          <div class="about-card">
+            <h3>🛡️ The 5-Layer Safety System</h3>
+            <ul>
+              <li><strong>Layer 1:</strong> Keyword scanner — runs before the AI, in 15+ languages</li>
+              <li><strong>Layer 2:</strong> Risk context injection — informs the AI of the severity level</li>
+              <li><strong>Layer 3:</strong> System prompt crisis protocol — AI trained to respond safely</li>
+              <li><strong>Layer 4:</strong> Crisis block prepend — hotlines always surfaced for high-risk messages</li>
+              <li><strong>Layer 5:</strong> UI crisis banner &amp; alert bar — visual escalation in the interface</li>
+            </ul>
           </div>
 
           <div class="about-card warning">
             <h3>⚠️ Important Disclaimer</h3>
             <p>MindBridge is <strong>NOT a substitute for professional mental health care.</strong> It is not a licensed therapist, psychologist, or medical professional and cannot diagnose or treat any condition.</p>
+            <p>It is designed for emotional support and psychoeducation — a companion, not a clinician.</p>
             <p>If you are in crisis, call <strong>988</strong> (US) or go to your nearest emergency room <strong>immediately.</strong></p>
           </div>
 
           <div class="about-card">
             <h3>🛠 Technology Stack</h3>
             <ul>
-              <li><strong>AI:</strong> openai/gpt-oss-120b (open-source) via Groq API</li>
-              <li><strong>Languages:</strong> All world languages via Unicode script detection + LLM</li>
+              <li><strong>AI Model:</strong> openai/gpt-oss-120b (open-source) via Groq API</li>
+              <li><strong>Language Detection:</strong> Unicode script detection + LLM multilingual capability</li>
               <li><strong>Backend:</strong> Python 3 + Flask</li>
               <li><strong>Frontend:</strong> HTML5, CSS3, Vanilla JavaScript</li>
-              <li><strong>Safety Layer:</strong> Multilingual keyword crisis detection + LLM risk prompting</li>
+              <li><strong>Safety:</strong> Multilingual keyword crisis detection + LLM risk prompting</li>
               <li><strong>Privacy:</strong> No conversation history stored server-side</li>
             </ul>
           </div>
@@ -214,23 +493,74 @@
     // ── State ──────────────────────────────────────────────────────
     let conversationHistory = [];
     let isThinking = false;
+    let currentMoodScore = null;
+    let breatheTimer = null;
+    let breathePhaseIndex = 0;
+    let breatheSecondsLeft = 4;
+    let breatheCycleCount = 0;
+    let breatheTotalCycles = 5;
+    const breathePhases = [
+      { label: "Breathe In",  seconds: 4, cls: "expand",  instruction: "Inhale slowly through your nose" },
+      { label: "Hold",        seconds: 4, cls: "hold",    instruction: "Hold gently — lungs full" },
+      { label: "Breathe Out", seconds: 4, cls: "contract",instruction: "Exhale slowly through your mouth" },
+      { label: "Hold",        seconds: 4, cls: "hold",    instruction: "Rest here — empty and still" },
+    ];
 
     // ── Boot ───────────────────────────────────────────────────────
     document.addEventListener("DOMContentLoaded", () => {
       checkStatus();
-      showWelcomeMessage();
+      initMoodSlider();
     });
 
+    // ── Mood check-in ──────────────────────────────────────────────
+    function initMoodSlider() {
+      updateMoodSlider(5);
+    }
+
+    const MOOD_EMOJIS = ["", "😭","😢","😞","😔","😐","🙂","😊","😄","😁","🤩"];
+    const MOOD_LABELS = ["", "Very bad","Very bad","Bad","Low","Okay","Okay","Good","Good","Great","Amazing"];
+
+    function updateMoodSlider(val) {
+      const v = parseInt(val);
+      document.getElementById("mood-score").textContent = v;
+      document.getElementById("mood-emoji").textContent = MOOD_EMOJIS[v] || "😶";
+      document.getElementById("mood-label").textContent = MOOD_LABELS[v] || "–";
+    }
+
+    function shareMood() {
+      const score = document.getElementById("mood-slider").value;
+      currentMoodScore = parseInt(score);
+      hideMoodCheckin();
+      const label = MOOD_LABELS[currentMoodScore] || "okay";
+      const emoji = MOOD_EMOJIS[currentMoodScore] || "😐";
+      appendMessage("assistant",
+        `Thanks for telling me. You're feeling **${label}** ${emoji} today.\n\n` +
+        `I'm here with you. Take as much time as you need — there's no rush, no pressure, and nothing you share here will be judged.\n\n` +
+        `What's been going on for you lately?`
+      );
+    }
+
+    function skipMood() {
+      currentMoodScore = null;
+      hideMoodCheckin();
+      showWelcomeMessage();
+    }
+
+    function hideMoodCheckin() {
+      const el = document.getElementById("mood-checkin");
+      el.style.opacity = "0";
+      el.style.transform = "translateY(-8px)";
+      setTimeout(() => { el.style.display = "none"; }, 300);
+    }
+
+    // ── Welcome message ─────────────────────────────────────────────
     function showWelcomeMessage() {
       appendMessage("assistant",
-        `Hello, I'm **MindBridge** 💚🌍\n\n` +
-        `I'm here to listen, support, and walk alongside you — no judgment, no pressure. ` +
-        `This is a safe space where you can share whatever is on your mind.\n\n` +
-        `Whether you're feeling anxious, overwhelmed, sad, or just need someone to talk to, ` +
-        `I'm here. You can also ask me about coping strategies, mental health topics, ` +
-        `or how to support someone you care about.\n\n` +
-        `I speak **all world languages** — just write to me in your language and I will reply in the same language.\n\n` +
-        `*How are you feeling today? / ¿Cómo te sientes hoy? / Comment vous sentez-vous? / आज आप कैसा महसूस कर रहे हैं?*`
+        `Hello, I'm **MindBridge** 💚\n\n` +
+        `I'm here to listen — not to judge, not to fix, just to be with you in whatever you're going through right now.\n\n` +
+        `Whether you're feeling anxious, overwhelmed, sad, or just need someone to talk to, this is a safe space. You can share as much or as little as you want.\n\n` +
+        `I speak **all world languages** — just write to me in your language and I'll reply in the same language. 🌍\n\n` +
+        `*What's on your mind today?*`
       );
     }
 
@@ -244,7 +574,7 @@
         if (data.ok) {
           dot.className    = "status-dot online";
           dot.textContent  = "AI Online";
-          statusText.textContent = `Online · ${data.model || "GPT-OSS 120B"}`;
+          statusText.textContent = "Online · Ready to listen";
           statusText.className   = "chat-agent-status online";
         } else {
           dot.className    = "status-dot offline";
@@ -252,7 +582,7 @@
           statusText.textContent = "Error · Check API key";
           statusText.className   = "chat-agent-status offline";
           appendMessage("system",
-            `⚠️ **Could not reach Groq API.** ${data.error || ""} ` +
+            `⚠️ **Could not reach the AI service.** ${data.error || ""} ` +
             `If you're in crisis, please call **988** or text HOME to **741741** immediately.`
           );
         }
@@ -271,6 +601,13 @@
       const message = input.value.trim();
       if (!message) return;
 
+      // Hide mood check-in if still visible
+      const checkin = document.getElementById("mood-checkin");
+      if (checkin.style.display !== "none") {
+        currentMoodScore = null;
+        checkin.style.display = "none";
+      }
+
       input.value = "";
       autoResize(input);
       appendMessage("user", message);
@@ -278,10 +615,15 @@
       setThinking(true);
 
       try {
+        const payload = { message, history: conversationHistory.slice(0, -1) };
+        if (currentMoodScore !== null) {
+          payload.mood = currentMoodScore;
+          currentMoodScore = null; // only send once
+        }
         const res  = await fetch("/api/chat", {
           method:  "POST",
           headers: { "Content-Type": "application/json" },
-          body:    JSON.stringify({ message, history: conversationHistory.slice(0, -1) }),
+          body:    JSON.stringify(payload),
         });
         const data = await res.json();
 
@@ -294,7 +636,7 @@
         }
       } catch (err) {
         appendMessage("system",
-          "⚠️ Network error. If you're in crisis, please call **988** immediately."
+          "⚠️ Network error. If you're in crisis, please call **988** or go to the **Crisis Help** tab."
         );
       }
       setThinking(false);
@@ -305,13 +647,13 @@
       const bar    = document.getElementById("risk-alert");
       const banner = document.querySelector(".crisis-banner");
       if (level === "high") {
-        bar.innerHTML   = `🆘 <strong>Crisis Resources:</strong> Call <strong>988</strong> &nbsp;|&nbsp; Text HOME to <strong>741741</strong> &nbsp;|&nbsp; Emergency: <strong>911</strong>`;
+        bar.innerHTML   = `🆘 <strong>Crisis Help:</strong> Call <strong>988</strong> (US) &nbsp;|&nbsp; Text HOME to <strong>741741</strong> &nbsp;|&nbsp; <a href="#" onclick="showPanel('crisis');return false;" style="color:#7a0000;font-weight:600;">See all countries →</a>`;
         bar.style.display = "block";
         bar.className   = "risk-alert high";
         banner.classList.add("flash");
-        setTimeout(() => banner.classList.remove("flash"), 2500);
+        setTimeout(() => banner.classList.remove("flash"), 3000);
       } else if (level === "moderate") {
-        bar.innerHTML   = `💛 If things feel overwhelming, professional support is available. <strong>988</strong> is free and confidential.`;
+        bar.innerHTML   = `💛 Things feel heavy right now. Professional support is here for you — <strong>988</strong> is free, confidential, and available 24/7.`;
         bar.style.display = "block";
         bar.className   = "risk-alert moderate";
       } else {
@@ -332,7 +674,7 @@
       if (role === "assistant") {
         const avatar      = document.createElement("div");
         avatar.className  = "avatar";
-        avatar.textContent = "🧠";
+        avatar.textContent = "💚";
         wrapper.appendChild(avatar);
       }
       wrapper.appendChild(bubble);
@@ -342,19 +684,16 @@
 
     // ── Markdown → HTML ────────────────────────────────────────────
     function markdownToHtml(text) {
-      // Step 1: escape bare HTML to prevent injection
       text = text
         .replace(/&/g, "&amp;")
         .replace(/</g, "&lt;")
         .replace(/>/g, "&gt;");
 
-      // Step 2: inline formatting (bold before italic to avoid ** overlap)
       text = text
         .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
         .replace(/(?<!\*)\*(?!\*)(.+?)(?<!\*)\*(?!\*)/g, "<em>$1</em>")
         .replace(/`([^`]+)`/g, "<code>$1</code>");
 
-      // Step 3: block elements — process line-by-line
       const lines  = text.split("\n");
       const output = [];
       let inList   = false;
@@ -362,14 +701,12 @@
       for (const raw of lines) {
         const line = raw.trimEnd();
 
-        // Horizontal rule
         if (/^---+$/.test(line)) {
           if (inList) { output.push("</ul>"); inList = false; }
           output.push("<hr>");
           continue;
         }
 
-        // Bullet list item  (-, *, •)
         const listMatch = line.match(/^[\s]*[-*•]\s+(.+)/);
         if (listMatch) {
           if (!inList) { output.push("<ul>"); inList = true; }
@@ -377,7 +714,6 @@
           continue;
         }
 
-        // Numbered list item
         const numMatch = line.match(/^[\s]*\d+\.\s+(.+)/);
         if (numMatch) {
           if (!inList) { output.push("<ul>"); inList = true; }
@@ -385,13 +721,11 @@
           continue;
         }
 
-        // Close list when non-list content appears
         if (inList && line.trim() !== "") {
           output.push("</ul>");
           inList = false;
         }
 
-        // Blank line → paragraph break
         if (line.trim() === "") {
           output.push("</p><p>");
         } else {
@@ -401,7 +735,6 @@
 
       if (inList) output.push("</ul>");
 
-      // Wrap in <p>, clean up empty paragraphs and trailing <br> before </p>
       let html = "<p>" + output.join("") + "</p>";
       html = html
         .replace(/<p>\s*<\/p>/g, "")
@@ -428,7 +761,7 @@
 
         const avatar      = document.createElement("div");
         avatar.className  = "avatar";
-        avatar.textContent = "🧠";
+        avatar.textContent = "💚";
 
         const bubble = document.createElement("div");
         bubble.className = "message-bubble assistant thinking";
@@ -463,11 +796,79 @@
     // ── Reset ──────────────────────────────────────────────────────
     async function resetConversation() {
       conversationHistory = [];
+      currentMoodScore = null;
       document.getElementById("chat-messages").innerHTML = "";
       document.getElementById("risk-alert").style.display = "none";
+      const checkin = document.getElementById("mood-checkin");
+      checkin.style.display = "";
+      checkin.style.opacity = "1";
+      checkin.style.transform = "";
       await fetch("/api/reset", { method: "POST" });
-      showWelcomeMessage();
       showPanel("chat");
+      initMoodSlider();
+    }
+
+    // ── Breathing Exercise ─────────────────────────────────────────
+    function startBreathe() {
+      document.getElementById("breathe-start-btn").style.display = "none";
+      document.getElementById("breathe-stop-btn").style.display  = "inline-block";
+      breathePhaseIndex = 0;
+      breatheCycleCount = 0;
+      runBreathePhase();
+    }
+
+    function stopBreathe() {
+      if (breatheTimer) { clearTimeout(breatheTimer); breatheTimer = null; }
+      const circle = document.getElementById("breathe-circle");
+      circle.className = "breathe-circle";
+      document.getElementById("breathe-phase").textContent = "Press Start";
+      document.getElementById("breathe-timer").textContent = "";
+      document.getElementById("breathe-instruction").textContent = "Box breathing: 4 seconds in — 4 hold — 4 out — 4 hold. Repeat 5 times.";
+      document.getElementById("breathe-cycles").textContent = "";
+      document.getElementById("breathe-start-btn").style.display = "inline-block";
+      document.getElementById("breathe-stop-btn").style.display  = "none";
+    }
+
+    function runBreathePhase() {
+      if (breatheCycleCount >= breatheTotalCycles) {
+        document.getElementById("breathe-phase").textContent = "Well done 💚";
+        document.getElementById("breathe-timer").textContent = "";
+        document.getElementById("breathe-instruction").textContent = "You completed 5 cycles. Notice how your body feels right now.";
+        document.getElementById("breathe-cycles").textContent = "";
+        document.getElementById("breathe-circle").className = "breathe-circle done";
+        document.getElementById("breathe-start-btn").style.display = "inline-block";
+        document.getElementById("breathe-stop-btn").style.display  = "none";
+        return;
+      }
+
+      const phase = breathePhases[breathePhaseIndex];
+      const circle = document.getElementById("breathe-circle");
+      circle.className = "breathe-circle " + phase.cls;
+      document.getElementById("breathe-phase").textContent = phase.label;
+      document.getElementById("breathe-instruction").textContent = phase.instruction;
+
+      const cycleText = breathePhaseIndex === 0
+        ? `Cycle ${breatheCycleCount + 1} of ${breatheTotalCycles}`
+        : "";
+      document.getElementById("breathe-cycles").textContent = cycleText;
+
+      breatheSecondsLeft = phase.seconds;
+      tickBreathTimer();
+    }
+
+    function tickBreathTimer() {
+      document.getElementById("breathe-timer").textContent = breatheSecondsLeft;
+      if (breatheSecondsLeft > 0) {
+        breatheSecondsLeft--;
+        breatheTimer = setTimeout(tickBreathTimer, 1000);
+      } else {
+        breathePhaseIndex++;
+        if (breathePhaseIndex >= breathePhases.length) {
+          breathePhaseIndex = 0;
+          breatheCycleCount++;
+        }
+        breatheTimer = setTimeout(runBreathePhase, 200);
+      }
     }
   </script>
 </body>
